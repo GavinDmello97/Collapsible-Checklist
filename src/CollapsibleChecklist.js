@@ -34,7 +34,7 @@ export default class SkillList extends Component {
     tempList[index] = updatedTalent;
     this.setState({talents: tempList});
   };
-  testIsOpen = (currentlyOpenedTalentIndex) => {
+  testIsOpen = currentlyOpenedTalentIndex => {
     this.setState({selectedTalent: currentlyOpenedTalentIndex});
   };
 
@@ -123,7 +123,7 @@ class Talent extends Component {
     const {isOpen, talent} = this.state;
     let selectedArray = [];
     talent &&
-      talent.skills.map((skill) => {
+      talent.skills.map(skill => {
         if (skill.isSelectedByUser === true) {
           selectedArray.push(skill.title);
         }
@@ -167,7 +167,7 @@ class Talent extends Component {
         {!isOpen && (
           <View style={{marginLeft: 20}}>
             {selectedArray.length > 0 &&
-              selectedArray.map((title) => {
+              selectedArray.map(title => {
                 return (
                   <View style={styles.talentContainer}>
                     <Image
