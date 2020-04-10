@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import {
   StyleSheet,
-  StatusBar,
-  Alert,
   View,
   Text,
   Image,
@@ -10,7 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 
-export default class SkillList extends Component {
+export default class listList extends Component {
   static navigationOptions = () => {
     return {
       headerShown: false,
@@ -18,50 +16,40 @@ export default class SkillList extends Component {
   };
   constructor(props) {
     super(props);
-    // skillSet = this;
     this.state = {
-      talents: this.props.data,
+      checklist: this.props.data,
       selectedData: null,
       type: 0,
       adventureId: '',
-      skillsMarked: null,
-      selectedTalent: 0,
+      listsMarked: null,
+      selectedHeader: 0,
     };
   }
 
-  updateTalent = (updatedTalent, index) => {
-    let tempList = this.state.talents;
-    tempList[index] = updatedTalent;
-    this.setState({talents: tempList});
+  updateChecklist = (updatedHeader, index) => {
+    let tempList = this.state.checklist;
+    tempList[index] = updatedHeader;
+    this.setState({checklist: tempList});
   };
-  testIsOpen = currentlyOpenedTalentIndex => {
-    this.setState({selectedTalent: currentlyOpenedTalentIndex});
+  testIsOpen = currentlyOpenedHeaderIndex => {
+    this.setState({selectedHeader: currentlyOpenedHeaderIndex});
   };
 
   render() {
-    const {talents, type} = this.state;
+    const {checklist, type} = this.state;
     return (
       <View flex-1 style={styles.container}>
-        <StatusBar
-          backgroundColor="rgba(0,0,0,0)"
-          showHideTransition="slide"
-          barStyle="dark-content"
-          translucent={true}
-          hidden={false}
-        />
-        {/* <OfflineNotice /> */}
-
         <ScrollView>
           <View padding-20>
-            {talents &&
-              talents.map((talent, index) => {
+            {checklist &&
+              checklist.map((checklistElement, index) => {
                 return (
-                  <Talent
+                  <Header
                     key={index}
-                    talentIndex={index}
-                    isOpenIndex={this.state.selectedTalent}
-                    talentData={talent}
-                    callBackFromSkillList={this.updateTalent}
+                    checklistElementIndex={index}
+                    isOpenIndex={this.state.selectedHeader}
+                    checklistElement={checklistElement}
+                    callBackFromlistList={this.updateChecklist}
                     callBackForIsOpen={this.testIsOpen}
                   />
                 );
@@ -73,20 +61,18 @@ export default class SkillList extends Component {
   }
 }
 
-let talentSet;
-class Talent extends Component {
+class Header extends Component {
   constructor(props) {
     super(props);
-    talentSet = this;
     this.state = {
       isOpen: false,
       isOpenIndex: this.props.isOpenIndex,
-      index: this.props.talentIndex,
-      talent: this.props.talentData,
+      index: this.props.checklistElementIndex,
+      checklistElement: this.props.checklistElement,
     };
   }
   componentDidMount() {
-    if (this.props.isOpenIndex === this.props.talentIndex) {
+    if (this.props.isOpenIndex === this.props.checklistElementIndex) {
       this.setState({isOpen: true});
     } else {
       this.setState({isOpen: false});
@@ -95,13 +81,7 @@ class Talent extends Component {
 
   shouldComponentUpdate(nextProps, nextState, nextContext) {
     if (this.props.isOpenIndex !== nextProps.isOpenIndex) {
-      console.log(
-        this.props.isOpenIndex,
-        nextProps.isOpenIndex,
-        this.props.talentIndex,
-      );
-
-      if (nextProps.isOpenIndex === this.props.talentIndex) {
+      if (nextProps.isOpenIndex === this.props.checklistElementIndex) {
         this.setState({isOpen: true});
       } else {
         this.setState({isOpen: false});
@@ -111,21 +91,24 @@ class Talent extends Component {
     return true;
   }
 
-  updateSkill = (skillToUpdate, index) => {
-    let tempTalent = this.state.talent;
-    tempTalent.skills[index] = skillToUpdate;
-    this.setState({talent: tempTalent}, () => {
-      this.props.callBackFromSkillList(this.state.talent, this.state.index);
+  updatelist = (listToUpdate, index) => {
+    let tempchecklistElement = this.state.checklistElement;
+    tempchecklistElement.lists[index] = listToUpdate;
+    this.setState({checklistElement: tempchecklistElement}, () => {
+      this.props.callBackFromlistList(
+        this.state.checklistElement,
+        this.state.index,
+      );
     });
   };
 
   render() {
-    const {isOpen, talent} = this.state;
+    const {isOpen, checklistElement} = this.state;
     let selectedArray = [];
-    talent &&
-      talent.skills.map(skill => {
-        if (skill.isSelectedByUser === true) {
-          selectedArray.push(skill.title);
+    checklistElement &&
+      checklistElement.lists.map(list => {
+        if (list.isSelectedByUser === true) {
+          selectedArray.push(list.title);
         }
       });
     return (
@@ -145,20 +128,20 @@ class Talent extends Component {
               }
               style={styles.dropDownButton}
             />
-            <Text>{talent.title}</Text>
+            <Text>{checklistElement.title}</Text>
           </View>
         </TouchableOpacity>
         {isOpen && (
           <View style={{marginLeft: 20}}>
-            {talent &&
-              talent.skills &&
-              talent.skills.map((skill, index) => {
+            {checklistElement &&
+              checklistElement.lists &&
+              checklistElement.lists.map((list, index) => {
                 return (
-                  <Skill
+                  <List
                     key={index}
-                    skillIndex={index}
-                    skillData={skill}
-                    callBack={this.updateSkill}
+                    listIndex={index}
+                    listData={list}
+                    callBack={this.updatelist}
                   />
                 );
               })}
@@ -169,7 +152,7 @@ class Talent extends Component {
             {selectedArray.length > 0 &&
               selectedArray.map(title => {
                 return (
-                  <View style={styles.talentContainer}>
+                  <View style={styles.checklistElementContainer}>
                     <Image
                       source={require('../src/Icons/greenTick.png')}
                       style={styles.greenTick}
@@ -185,33 +168,33 @@ class Talent extends Component {
   }
 }
 
-let skillObject;
-class Skill extends Component {
+let listObject;
+class List extends Component {
   constructor(props) {
     super(props);
-    skillObject = this;
+    listObject = this;
     this.state = {
-      index: this.props.skillIndex,
-      isSelected: this.props.skillData.isSelectedByUser,
-      skill: this.props.skillData,
+      index: this.props.listIndex,
+      isSelected: this.props.listData.isSelectedByUser,
+      list: this.props.listData,
     };
   }
 
   render() {
-    const {index, isSelected, skill} = this.state;
+    const {index, isSelected, list} = this.state;
     return (
       <View>
         <TouchableOpacity
           onPress={async () => {
             await this.setState({isSelected: !isSelected}, async () => {
-              let newStateOfSkill;
+              let newStateOflist;
               if (this.state.isSelected === true) {
-                newStateOfSkill = {...skill, isSelectedByUser: true};
+                newStateOflist = {...list, isSelectedByUser: true};
               } else {
-                newStateOfSkill = {...skill, isSelectedByUser: false};
+                newStateOflist = {...list, isSelectedByUser: false};
               }
-              await this.setState({skill: newStateOfSkill}, () => {
-                this.props.callBack(newStateOfSkill, index);
+              await this.setState({list: newStateOflist}, () => {
+                this.props.callBack(newStateOflist, index);
               });
             });
           }}>
@@ -229,7 +212,7 @@ class Skill extends Component {
               }
               style={styles.greenTick}
             />
-            <Text>{skill.title}</Text>
+            <Text>{list.title}</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -280,7 +263,7 @@ const styles = StyleSheet.create({
   },
   dropDownButton: {width: 20, height: 20, marginRight: 10},
   greenTick: {width: 20, height: 20, marginRight: 5},
-  talentContainer: {
+  checklistElementContainer: {
     alignItems: 'flex-end',
     justifyContent: 'flex-start',
     flexDirection: 'row',

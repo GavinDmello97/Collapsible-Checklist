@@ -9,7 +9,7 @@ class App extends React.Component {
       data: [
         {
           id: '00',
-          skills: [
+          lists: [
             {
               id: '001',
               title: 'sublist item 01',
@@ -30,7 +30,7 @@ class App extends React.Component {
         },
         {
           id: '01',
-          skills: [
+          lists: [
             {
               id: '011',
               title: 'sublist item 11',
